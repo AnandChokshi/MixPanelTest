@@ -1,20 +1,16 @@
 package com.inventure.test.aftest;
 
 import android.app.Activity;
+import android.content.Context;
 import android.os.Bundle;
-import android.view.View;
-import android.widget.Button;
+import android.telephony.TelephonyManager;
 
 import com.mixpanel.android.mpmetrics.MixpanelAPI;
-
-import org.json.JSONException;
-import org.json.JSONObject;
 
 
 public class MainActivity extends Activity {
 
     MixpanelAPI mMixpanel;
-    JSONObject props;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -23,21 +19,10 @@ public class MainActivity extends Activity {
 
         String projectToken = "7065ba64bf3b84db62283dafe92d2b72";
         mMixpanel = MixpanelAPI.getInstance(this, projectToken);
-        try {
-            props = new JSONObject();
-            props.put("USER", "Name Goes HERE");
-            props.put("ID", "ID Goes HERE");
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-
-        Button button = (Button) findViewById(R.id.button);
-        button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mMixpanel.track("My Event", props);
-            }
-        });
+        TelephonyManager telephonyManager = (TelephonyManager)getSystemService(Context.TELEPHONY_SERVICE);
+        String deviceId = telephonyManager.getDeviceId();
+        mMixpanel.identify(deviceId);
+        mMixpanel.track("AppInstall");
     }
 
     @Override
