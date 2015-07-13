@@ -4,6 +4,8 @@ import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
 import android.telephony.TelephonyManager;
+import android.util.Log;
+import android.widget.Toast;
 
 import com.mixpanel.android.mpmetrics.MixpanelAPI;
 
@@ -24,17 +26,7 @@ public class MainActivity extends Activity {
         String projectToken = "7065ba64bf3b84db62283dafe92d2b72";
         mMixpanel = MixpanelAPI.getInstance(getBaseContext(), projectToken);
         TelephonyManager telephonyManager = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
-        String deviceId = telephonyManager.getDeviceId();
-        mMixpanel.identify(deviceId);
-
-        // With props
-        try {
-            props = new JSONObject();
-            props.put("TEST", "WITH PROPS");
-            mMixpanel.track("AppInstall", props);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
+        final String deviceId = telephonyManager.getDeviceId();
 
 
         // Delay event to see if it works or not
@@ -42,7 +34,16 @@ public class MainActivity extends Activity {
         handler.postDelayed(new Runnable() {
             @Override
             public void run() {
-                mMixpanel.track("DelayInstall", props);
+                try {
+                    mMixpanel.identify(deviceId);
+                    props = new JSONObject();
+                    props.put("TEST", "WITH PROPS");
+                    mMixpanel.track("Install", props);
+                    Log.d("TEST", "FIRST");
+                    Toast.makeText(getBaseContext(), "CALLED", Toast.LENGTH_LONG).show();
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
             }
         }, 5000);
 

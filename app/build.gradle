@@ -8,8 +8,8 @@ android {
         applicationId "com.inventure.test.aftest"
         minSdkVersion 9
         targetSdkVersion 22
-        versionCode 8
-        versionName "8.0"
+        versionCode 10
+        versionName "10.0"
     }
     buildTypes {
         release {
